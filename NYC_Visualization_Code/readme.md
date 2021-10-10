@@ -1,1 +1,1 @@
-This folder contains code and figures for visualizing data for NYC.
+This folder contains code for visualizing data for NYC.
