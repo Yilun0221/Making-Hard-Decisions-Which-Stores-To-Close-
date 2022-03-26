@@ -1,0 +1,69 @@
+---
+title: "Linear_reg_Huff_parameters"
+output: html_document
+---
+
+```{r}
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+
+data = read.csv('vars_2018_normalized_df.csv')
+```
+
+```{r}
+model = lm(D_Number_of_Visits_2018 ~ G_Distance_between_cbg_and_store + 
+             H_Area_of_store + factor(I_Includes_parking_lot) + 
+             L_Demographic_similarity + J_POI_count_where_store_is +
+             K_POI_diversity_where_store_is + 
+             R_Percentage_of_Visits_by_brand_2018, data=data)
+```
+
+```{r}
+summary(model)
+```
+
+
+
+```{r}
+#tiff(file="Figure Reproduction/figures/linear regression results (normalized independent variables).tiff")
+
+#lm_summary = summary(model)
+
+#summary(model)
+```
+
+```{r}
+library(stargazer)
+#output<-stargazer(model, type = "text")
+#capture.output(output, file = "linear regression model.txt")
+stargazer(model, type = "text", out = 'linear regression model.html')
+```
+
+```{r}
+library(sjPlot)
+tab_model(model, file="linear regression model.doc")
+```
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+X1 = c("All Features", "distance + area", "distance + parking", "distance + loyalty"
+       , "distance + POIcount", "distance + POIdiversity", "distance + DmogSimilarity")
+X2 = c(0.6535149467929174, 0.0618417647395582, 0.1119916754852909, 
+       0.1973595251670646, 0.019012322881496072,
+       0.07479805576576809 ,0.10441175199616665)
+b = data.frame(cbind(X2, X1))
+b$X2 <- as.numeric(b$X2)
+ggplot(b, aes(x = X2, y = reorder(X1,X2))) +
+  geom_point() +
+  labs(title = "Feature Performance Plot",
+       x = "Pearson Correlation",
+       y = "Feature Combinations")
+
+png("Figure Reproduction/figures/feature performance cleveland plot.png")
+print(p)
+dev.off()
+```
+
